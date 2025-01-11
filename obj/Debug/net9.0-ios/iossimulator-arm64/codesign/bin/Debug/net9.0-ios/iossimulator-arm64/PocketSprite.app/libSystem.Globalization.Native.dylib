@@ -1,0 +1,1 @@
+-v --force --timestamp=none --sign - /Users/andrewbazen/PocketSprite/PocketSprite/bin/Debug/net9.0-ios/iossimulator-arm64/PocketSprite.app/libSystem.Globalization.Native.dylib

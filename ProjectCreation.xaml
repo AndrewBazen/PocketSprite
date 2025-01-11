@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PocketSprite.ProjectCreation"
+             Title="ProjectCreation">
+
+    <VerticalStackLayout Padding="30" Spacing="20">
+
+        <Label Text="Create New Project" 
+               Style="{StaticResource Headline}" 
+               HorizontalOptions="Center" />
+
+        <!-- Project Name Input -->
+        <Entry Placeholder="Enter project name"
+               x:Name="ProjectNameEntry" />
+
+        <!-- Additional Input (e.g., project description) -->
+        <Entry Placeholder="Enter project width"
+                x:Name="ProjectWidthEntry" />
+
+        <Entry Placeholder="Enter project height"
+                x:Name="ProjectHeightEntry" />
+        
+        <Entry Placeholder="Enter project Pixel Size"
+                x:Name="ProjectPixelSizeEntry" />
+
+        <Picker x:Name="ProjectBackgroundColorPicker">
+            <Picker.ItemsSource>
+                <x:String>Black</x:String>
+                <x:String>White</x:String>
+                <x:String>Red</x:String>
+                <x:String>Green</x:String>
+                <x:String>Blue</x:String>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <!-- Create Button -->
+        <Button Text="Create" 
+                Clicked="OnCreateClicked" 
+                HorizontalOptions="Center" />
+        
+    </VerticalStackLayout>
+</ContentPage>
