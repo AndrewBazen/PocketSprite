@@ -1,1 +1,0 @@
--v --force --timestamp=none --sign - --entitlements /Users/andrewbazen/PocketSprite/PocketSprite/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/Entitlements.xcent /Users/andrewbazen/PocketSprite/PocketSprite/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/PocketSprite.app
