@@ -384,11 +384,18 @@ temp
 .packages
 /src/Templates/.tempTemplateOutput
 
+
+# Ignore build directories
+bin/
+obj/
+
+# Ignore specific Debug folders
 obj/Debug/
 bin/Debug/
-obj/Debug/net9.0-android/PocketSprite.AssemblyInfo.cs
-obj/Debug/net9.0-android/PocketSprite.AssemblyInfoInputs.cache
-obj/Debug/net9.0-ios/iossimulator-arm64/PocketSprite.AssemblyInfo.cs
-obj/Debug/net9.0-ios/iossimulator-arm64/PocketSprite.AssemblyInfoInputs.cache
-obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/PocketSprite.AssemblyInfo.cs
-obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/PocketSprite.AssemblyInfoInputs.cache
+obj/Debug/net9.0-android/
+obj/Debug/net9.0-ios/
+obj/Debug/net9.0-maccatalyst/
+
+# Ignore all files within obj and bin directories
+bin/**
+obj/**
