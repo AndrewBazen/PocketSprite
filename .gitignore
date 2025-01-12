@@ -396,6 +396,7 @@ obj/Debug/net9.0-android/
 obj/Debug/net9.0-ios/
 obj/Debug/net9.0-maccatalyst/
 
+
 # Ignore all files within obj and bin directories
 bin/**
 obj/**
