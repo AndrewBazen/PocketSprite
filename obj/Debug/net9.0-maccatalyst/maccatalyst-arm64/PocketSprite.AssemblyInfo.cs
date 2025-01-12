@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PocketSprite")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+67186cdc37fa2a8f07ffffc3d4715895f3ad7d19")]
 [assembly: System.Reflection.AssemblyProductAttribute("PocketSprite")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PocketSprite")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
