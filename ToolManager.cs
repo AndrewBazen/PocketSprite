@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using AndroidX.Lifecycle.ViewModels;
 using Microsoft.Maui.Controls.Platform;
 
 namespace PocketSprite;
@@ -9,8 +8,9 @@ public class ToolManager
 {
     public List<Tool> _toolSet = new List<Tool>();
     private Tool activeTool;
-    public ToolManager(Tool active=) {
-
+    private Tool brushTool;
+    public ToolManager(Tool active) {
+        activeTool = active;
     }
 
     // Parse tools in a json and create the tools, adding them to the toolset

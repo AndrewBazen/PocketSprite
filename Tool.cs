@@ -1,14 +1,11 @@
 using System;
-using Android.Health.Connect.DataTypes;
 
 namespace PocketSprite;
 
-public class Tool
+public class Tool(bool _isActive)
 {
-    bool isActive;
-    public Tool(bool _isActive) {
-        isActive = _isActive;
-    }
+    public bool isActive { get; set; } = _isActive;
+
 
 
 }

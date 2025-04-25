@@ -7,8 +7,6 @@ namespace PocketSprite;
 public partial class MainPage : ContentPage
 {
     private LayerManager _layerManager;
-
-	private ToolManager _toolManager;
 	private SKPoint? _lastTouchPoint; // Store the last touch point
 	private int _pixelSize = 6; // Size of each grid pixel in canvas units
 
@@ -21,13 +19,7 @@ public partial class MainPage : ContentPage
 
         // Initialize the layer manager
         _layerManager = new LayerManager(canvasWidth / _pixelSize, canvasHeight / _pixelSize, _pixelSize);
-
-		var currentLayer = _layerManager.currentLayer;
-
-        // Set some example pixels
-        currentLayer.SetPixel(10, 10, SKColors.Red);
-        currentLayer.SetPixel(20, 20, SKColors.Blue);
-        currentLayer.SetPixel(30, 30, SKColors.Green);
+		_layerManager.InitializeLayers();
 
         // Redraw the canvas
         PixelCanvasView.InvalidateSurface();
@@ -41,7 +33,7 @@ public partial class MainPage : ContentPage
         canvas.Clear(SKColors.White);
 
         // Draw the layers
-        _layerManager.Draw(canvas);
+		_layerManager.DrawLayers(canvas);
 
 		    // Draw grid overlay
     	DrawGridOverlay(canvas, e.Info.Width, e.Info.Height, _pixelSize);
@@ -57,8 +49,8 @@ public partial class MainPage : ContentPage
 			float canvasWidth = canvasView.CanvasSize.Width;
 			float canvasHeight = canvasView.CanvasSize.Height;
 
-			float gridWidth = _layerManager._width * _pixelSize;
-			float gridHeight = _layerManager._height * _pixelSize;
+			float gridWidth = _layerManager.Width * _pixelSize;
+			float gridHeight = _layerManager.Height * _pixelSize;
 
 			// Calculate the scale factor applied during rendering
 			float scaleX = canvasWidth / gridWidth;
@@ -74,7 +66,7 @@ public partial class MainPage : ContentPage
 			int currentY = (int)(adjustedY / _pixelSize);
 
 			// Ensure the coordinates are within bounds
-			if (currentX >= 0 && currentX < _layerManager._width && currentY >= 0 && currentY < _layerManager._height)
+			if (currentX >= 0 && currentX < _layerManager.Width && currentY >= 0 && currentY < _layerManager.Height)
 			{
 				// Draw a line from the last point to the current point
 				if (_lastTouchPoint != null)
@@ -117,7 +109,7 @@ public partial class MainPage : ContentPage
 		while (true)
 		{
 			// Set the pixel at the current point
-			_layerManager.currentLayer.SetPixel(x0, y0, color);
+			_layerManager.CurrentLayer.SetPixel(x0, y0, color);
 
 			// Break if we've reached the end point
 			if (x0 == x1 && y0 == y1) break;
@@ -135,39 +127,6 @@ public partial class MainPage : ContentPage
 				err += dx;
 				y0 += sy;
 			}
-		}
-	}
-
-	private void DrawGridOverlay(SKCanvas canvas, int canvasWidth, int canvasHeight, int pixelSize)
-	{
-		float gridWidth = _layerManager._width * _pixelSize;
-		float gridHeight = _layerManager._height * _pixelSize;
-
-		// Calculate the scale factor applied during rendering
-		float scaleX = canvasWidth / gridWidth;
-		float scaleY = canvasHeight / gridHeight;
-		float scale = Math.Min(scaleX, scaleY);
-
-		// Draw the grid overlay using the scaled pixel size
-		int scaledPixelSize = (int)(_pixelSize * scale);
-	
-		using var gridPaint = new SKPaint
-		{
-			Color = SKColors.Gray.WithAlpha(128), // Semi-transparent gray
-			StrokeWidth = 0.5f,                     // Thin lines
-			Style = SKPaintStyle.Stroke
-		};
-
-		// Draw vertical grid lines
-		for (int x = 0; x <= gridWidth; x += pixelSize)
-		{
-			canvas.DrawLine(x, 0, x, gridHeight, gridPaint);
-		}
-
-		// Draw horizontal grid lines
-		for (int y = 0; y <= gridHeight; y += pixelSize)
-		{
-			canvas.DrawLine(0, y, gridWidth, y, gridPaint);
 		}
 	}
 }
