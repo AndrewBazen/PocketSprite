@@ -39,9 +39,12 @@ public partial class MainPage : ContentPage
     	DrawGridOverlay(canvas, e.Info.Width, e.Info.Height, _pixelSize);
     }
 
+	private bool doPaint = false;
 	private void OnCanvasViewTouch(object sender, SKTouchEventArgs e)
 	{
-		if (e.ActionType == SKTouchAction.Pressed || e.ActionType == SKTouchAction.Moved)
+		if (e.ActionType == SKTouchAction.Pressed) { doPaint = true; }
+        if (e.ActionType == SKTouchAction.Released) { doPaint = false; }
+        if (doPaint && e.ActionType == SKTouchAction.Moved)
 		{
 			var canvasView = (SKCanvasView)sender;
 

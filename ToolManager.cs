@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+
 using Microsoft.Maui.Controls.Platform;
 
 namespace PocketSprite;
@@ -8,9 +9,8 @@ public class ToolManager
 {
     public List<Tool> _toolSet = new List<Tool>();
     private Tool activeTool;
-    private Tool brushTool;
     public ToolManager(Tool active) {
-        activeTool = active;
+
     }
 
     // Parse tools in a json and create the tools, adding them to the toolset
@@ -29,6 +29,6 @@ public class ToolManager
             if (tool.isActive)
                 return tool;
         }
-        return brushTool;
+        return new Tool(true);
     }
 }
