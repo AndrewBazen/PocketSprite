@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using AndroidX.Lifecycle.ViewModels;
+
 using Microsoft.Maui.Controls.Platform;
 
 namespace PocketSprite;
@@ -9,7 +9,7 @@ public class ToolManager
 {
     public List<Tool> _toolSet = new List<Tool>();
     private Tool activeTool;
-    public ToolManager(Tool active=) {
+    public ToolManager(Tool active) {
 
     }
 
@@ -29,6 +29,6 @@ public class ToolManager
             if (tool.isActive)
                 return tool;
         }
-        return brushTool;
+        return new Tool(true);
     }
 }
