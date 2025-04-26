@@ -384,10 +384,9 @@ temp
 .packages
 /src/Templates/.tempTemplateOutput
 
-
-# Ignore build directories
-bin/
-obj/
+# ignore .vs folder
+.vs/
+.vscode/
 
 # Ignore specific Debug folders
 obj/Debug/
