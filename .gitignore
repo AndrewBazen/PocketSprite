@@ -384,9 +384,10 @@ temp
 .packages
 /src/Templates/.tempTemplateOutput
 
-# ignore .vs folder
+# ignore .vs and .vscode folders
 .vs/
 .vscode/
+# Ignore specific folders for Xamarin projects
 
 # Ignore specific Debug folders
 obj/Debug/
@@ -394,6 +395,12 @@ bin/Debug/
 obj/Debug/net9.0-android/
 obj/Debug/net9.0-ios/
 obj/Debug/net9.0-maccatalyst/
+
+obj/
+bin/
+
+PocketSpriteLib/obj/
+PocketSpriteLib/bin/
 
 
 # Ignore all files within obj and bin directories
