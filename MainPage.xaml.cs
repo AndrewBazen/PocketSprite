@@ -49,15 +49,15 @@ public partial class MainPage : ContentPage
 			var canvasView = (SKCanvasView)sender;
 
 			// Get the canvas scale (use the same logic as in Draw)
-			float canvasWidth = canvasView.CanvasSize.Width;
-			float canvasHeight = canvasView.CanvasSize.Height;
+			float canvasViewWidth = canvasView.CanvasSize.Width;
+			float canvasViewHeight = canvasView.CanvasSize.Height;
 
 			float gridWidth = _layerManager.Width * _pixelSize;
 			float gridHeight = _layerManager.Height * _pixelSize;
 
 			// Calculate the scale factor applied during rendering
-			float scaleX = canvasWidth / gridWidth;
-			float scaleY = canvasHeight / gridHeight;
+			float scaleX = canvasViewWidth / gridWidth;
+			float scaleY = canvasViewHeight / gridHeight;
 			float scale = Math.Min(scaleX, scaleY);
 
 			// Adjust touch coordinates to match the scaled grid
