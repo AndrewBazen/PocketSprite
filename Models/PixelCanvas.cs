@@ -1,5 +1,4 @@
-﻿/*
- * PixelCanvas.cs
+﻿/* PixelCanvas.cs
  * @Description: This file contains the logic for the PixelCanvas, LayerManager, and CanvasLayer classes, which all work 
  * in tandem to draw specific pixels to the SKCanvas.
  * 
@@ -13,12 +12,15 @@ using SkiaSharp.Views.Maui.Controls;
 
 namespace PocketSprite.Models
 {
+
     /* Class: PixelCanvas
      * The PixelCanvas class represents a pixel canvas for drawing.
      * 
      */
     internal class PixelCanvas
     {
+        // Constants for default canvas size and pixel size
+        // These values can be adjusted based on the requirements of the application
         const int DEFAULT_PIXEL_SIZE = 6;
         const int DEFAULT_CANVAS_WIDTH = 256;
         const int DEFAULT_CANVAS_HEIGHT = 256;
@@ -29,6 +31,7 @@ namespace PocketSprite.Models
         public LayerManager LayerManager { get; set; }
         public SKCanvas MainPixelCanvas { get; set; }
         public SKBitmap MainPixelBitmap { get; set; }
+
 
         /* Constructor: PixelCanvas
          * initializes a new instance of the PixelCanvas class with the specified width, height, and pixel size.
@@ -49,6 +52,7 @@ namespace PocketSprite.Models
             MainPixelCanvas.Clear(SKColors.White);
         }
 
+
         /* Method: SetPixel
          * Sets the color of a specific pixel on the canvas using x and y coordinates.
          * 
@@ -60,6 +64,7 @@ namespace PocketSprite.Models
             // Set the pixel on the current layer
             LayerManager.CurrentLayer?.SetPixel(x, y, color);
 
+
         /* Method: GetPixel
          * Returns the color of a specific pixel on the canvas using x and y coordinates.
          * 
@@ -67,9 +72,10 @@ namespace PocketSprite.Models
          * @param y: The y-coordinate of the pixel.
          * @return: The color of the pixel at the specified coordinates.
          */
-        public SKColor GetPixel(int x, int y) =>
+        public SKColor? GetPixel(int x, int y) =>
             // Get the pixel color from the current layer
-            LayerManager.CurrentLayer.GetPixel(x, y);
+            LayerManager.CurrentLayer?.GetPixel(x, y);
+
 
         /* Method: DrawGridOverlay
          * Returns the color of a specific pixel on the canvas using x and y coordinates.
@@ -111,7 +117,7 @@ namespace PocketSprite.Models
             }
         }
 
-        public void Draw(SKCanvas? canvas, int width, int height, int pixelSize, List<CanvasLayer> layers)
+        public void Draw(SKCanvas canvas, int width, int height, int pixelSize, List<CanvasLayer> layers)
         {
             // get the canvas size
             float canvasWidth = canvas.DeviceClipBounds.Width;
@@ -215,7 +221,7 @@ namespace PocketSprite.Models
         }
     }
 
-    /*
+    /* Class: LayerManager
      * The LayerManager class manages multiple layers of the canvas.
      * It allows adding, removing, and switching between layers.
      * It also handles drawing the layers onto the canvas.
@@ -223,7 +229,7 @@ namespace PocketSprite.Models
      * @author: Andrew Bazen
      * @date: 2025-4-24
      */
-    public class LayerManager
+    internal class LayerManager
     {
         // fields for the layer manager
         private List<CanvasLayer> _layers { get; set; } = [];
@@ -234,7 +240,6 @@ namespace PocketSprite.Models
         public int Width { get; set; }
         public int Height { get; set; }
         public int PixelSize { get; set; }
-
         public List<CanvasLayer> Layers => _layers;
 
 
@@ -244,7 +249,6 @@ namespace PocketSprite.Models
             Width = width;
             Height = height;
             PixelSize = pixelSize;
-
 
             // Add background layer
             var backgroundLayer = new CanvasLayer(Width, Height, DefaultBackgroundColor);
@@ -303,12 +307,5 @@ namespace PocketSprite.Models
                 CurrentLayer = Layers[index];
             }
         }
-
-        public void DrawLayers(SKCanvas canvas)
-        {
-            DrawToCanvas.Draw(canvas, Width, Height, PixelSize, Layers);
-        }
-
-
     }
 }
