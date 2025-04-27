@@ -4,23 +4,30 @@
              xmlns:viewModels="clr-namespace:PocketSprite.ViewModels"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="PocketSprite.Views.PixelCanvasPage"
-             Title="PixelCanvasPage"
+             Title="Pixel Canvas"
              x:DataType="viewModels:PixelCanvasViewModel">
     <ContentPage.BindingContext>
-    <viewModels:PixelCanvasViewModel />
+        <viewModels:PixelCanvasViewModel />
     </ContentPage.BindingContext>
-    <VerticalStackLayout>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
         <Label Text="Pixel Canvas"
                FontSize="32"
-               HorizontalOptions="Center" />
+               HorizontalOptions="Center"
+               Grid.Row="0"/>
+               
         <skia:SKCanvasView x:Name="PixelCanvasView"
-                        PaintSurface="OnCanvasViewPaintSurface"
-                        WidthRequest="{Binding CanvasWidth}"
-                        HeightRequest="{Binding CanvasHeight}"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        EnableTouchEvents="True"
-                        Scale="{Binding ScaleFactor}"
-                        Touch="OnCanvasViewTouch" />
-    </VerticalStackLayout>
+                    PaintSurface="OnCanvasViewPaintSurface"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Grid.Row="1"
+                    EnableTouchEvents="True"
+                    WidthRequest="500"
+                    HeightRequest="500"
+                    Touch="OnCanvasViewTouch" />
+    </Grid>
 </ContentPage>

@@ -1,60 +1,69 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SkiaSharp.Views.Maui.Controls;
+﻿/* PixelCanvasViewModel.cs
+ *
+ * @Description: This file contains the logic for the PixelCanvasViewModel class, which is the view model for the PixelCanvas.
+ * @Author: Andrew Bazen
+ * @Date: 2025-4-24
+ * @version: 1.0
+ * @license: MIT License
+ */
+using CommunityToolkit.Mvvm.ComponentModel;
 using SkiaSharp.Views.Maui;
-using SkiaSharp;
 using PocketSprite.Models;
-using PocketSpriteLib;
-using System.Threading.Tasks;
+using PocketSpriteLib.Drawing;
+using System.Runtime.Versioning;
 
 namespace PocketSprite.ViewModels
 {
-    internal class PixelCanvasViewModel : ObservableObject
+    /* @Class: PixelCanvasViewModel
+     *
+     * @Description: This class is the view model for the PixelCanvas.
+     * @Author: Andrew Bazen
+     * @Date: 2025-4-24
+     */
+    [SupportedOSPlatform("windows")]
+    [SupportedOSPlatform("android")]
+    [SupportedOSPlatform("ios")]
+    [SupportedOSPlatform("maccatalyst")]
+    public class PixelCanvasViewModel : ObservableObject
     {
-
         private PixelCanvas _pixelCanvas;
-        private int _scaleFactor;
-        public int PixelCanvasWidth => _pixelCanvas.Width;
-        public int PixelCanvasHeight => _pixelCanvas.Height;
+        private float _lastScaleFactor = 1;
 
-        public int ScaleFactor
-        {
-            get => _scaleFactor;
-            set
-            {
-                if (SetProperty(ref _scaleFactor, value))
-                {
-                    // Update the canvas size based on the scale factor
-                    _pixelCanvas.Width = PixelCanvasWidth * value;
-                    _pixelCanvas.Height = PixelCanvasHeight * value;
-                }
-            }
-        }
-
-        public int PixelSize => _pixelCanvas.PixelSize;
-
-       
+        /* @Constructor: PixelCanvasViewModel
+         *
+         * @Description: Constructor for the PixelCanvasViewModel class.
+         */
         public PixelCanvasViewModel()
         {
-            // Initialize the pixel canvas with default values
-
             _pixelCanvas = new PixelCanvas();
         }
 
-        public async void OnTouch(object sender, SKTouchEventArgs e)
+        /* @Method: OnTouch
+         *
+         * @Description: Handles the touch event for the PixelCanvas.
+         */
+        public void OnTouch(object sender, SKTouchEventArgs e)
         {
-            await _pixelCanvas.HandleTouch(sender, e);
-           
+            _pixelCanvas.HandleTouch(sender, e, _lastScaleFactor);
         }
 
-        public async Task PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        /* @Method: PaintSurface
+         *
+         * @Description: Handles the paint surface event for the PixelCanvas.
+         */
+        public void PaintSurface(SKPaintSurfaceEventArgs e)
         {
+            // PaintSurface
             var canvas = e.Surface.Canvas;
-            // Clear the canvas
-            canvas.Clear(SKColors.White);
-            // let the view model handle the drawing
+            canvas.Clear();
+            var scale = DrawingUtils.CalculateScale(_pixelCanvas.Width, _pixelCanvas.Height, e.Info.Width, e.Info.Height);
+            _lastScaleFactor = scale;
+            canvas.Save();
+            canvas.Scale(scale);
+            DrawingUtils.Draw(canvas, _pixelCanvas.Width, _pixelCanvas.Height, e.Info.Width, e.Info.Height, _pixelCanvas.LayerManager.Layers);
+            canvas.Restore();
 
-            // Draw the current layer
-            await _pixelCanvas.InitializeCanvas();
+
         }
     }
 }

@@ -1,46 +1,46 @@
 ﻿/* PixelCanvas.cs
+ *
  * @Description: This file contains the logic for the PixelCanvas, LayerManager, and CanvasLayer classes, which all work 
  * in tandem to draw specific pixels to the SKCanvas.
- * 
  * @Author: Andrew Bazen
  * @Date: 2025-4-24
  * @version: 1.0
- * @License: MIT License
+ * @license: MIT License 
  */
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
-using SkiaSharp.Views.Maui.Controls;
 using PocketSpriteLib.Drawing;
-using System.Threading.Tasks;
 using System.Runtime.Versioning;
+using SkiaSharp.Views.Maui.Controls;
+
 
 namespace PocketSprite.Models
 {
-    /// PixelCanvas class
+    /* @Class PixelCanvas
+     *
+     * @Description: This class contains the logic for the PixelCanvas, LayerManager, and CanvasLayer classes, which all work 
+     * in tandem to draw specific pixels to the SKCanvas.
+     * @Author: Andrew Bazen
+     * @Date: 2025-4-24 
+     */
     [SupportedOSPlatform("windows")]
     [SupportedOSPlatform("android")]
     [SupportedOSPlatform("ios")]
     [SupportedOSPlatform("maccatalyst")]
-    internal class PixelCanvas
+    public class PixelCanvas
     {
-        // Constants for default canvas size and pixel size
-        // These values can be adjusted based on the requirements of the application
+        // constants for defaults in pixels
+        const int DEFAULT_WIDTH = 256;
+        const int DEFAULT_HEIGHT = 256;
         const int DEFAULT_PIXEL_SIZE = 6;
-        const int DEFAULT_CANVAS_WIDTH = 256;
-        const int DEFAULT_CANVAS_HEIGHT = 256;
-
-        // properties for the canvas
-        public int Width { get; set; } = DEFAULT_CANVAS_WIDTH;
-        public int Height { get; set; } = DEFAULT_CANVAS_HEIGHT;
-        public int PixelSize { get; set; } = DEFAULT_PIXEL_SIZE;
-        public LayerManager LayerManager { get; set; }
-        public SKCanvas MainPixelCanvas { get; set; }
-        public SKBitmap MainPixelBitmap { get; set; }
-
-        private SKPoint? _lastTouchPoint; // Store the last touch point
+        private SKPoint _lastTouchPoint; // Store the last touch point
         private bool _isDrawing = false; // Flag to indicate if drawing is in progress
+        public int PixelSize { get; set; } = DEFAULT_PIXEL_SIZE;
+        public int Width { get; set; } = DEFAULT_WIDTH;
+        public int Height { get; set; } = DEFAULT_HEIGHT;
+        public LayerManager LayerManager { get; set; }
 
-        public SKPoint? LastTouchPoint // Store the last touch point
+        public SKPoint LastTouchPoint // Store the last touch point
         {
             get => _lastTouchPoint;
             set
@@ -52,133 +52,90 @@ namespace PocketSprite.Models
             }
         }
 
-        /// <summary>
-        ///  Constructor for the PixelCanvas class.
-        /// </summary>
+        /* @Constructor PixelCanvas
+         *
+         * @Description: Constructor for the PixelCanvas class. 
+         */
         public PixelCanvas()
         {
-            // Initialize the canvas and all properties
-            MainPixelBitmap = new SKBitmap(Width, Height);
-            MainPixelCanvas = new SKCanvas(MainPixelBitmap);
             LayerManager = new LayerManager(Width, Height, PixelSize);
             LastTouchPoint = SKPoint.Empty;
-
-            // @TODO: setup the canvas to adjust based on the system's color theme (dark or light)
-            // set the canvas color to white
-            MainPixelCanvas.Clear(SKColors.White);
-        }
-
-        public async Task InitializeCanvas()
-        {
-            // Clear the canvas
-            MainPixelCanvas.Clear(SKColors.White);
-
-            await DrawingUtils.Draw(MainPixelCanvas, Width, Height, PixelSize, LayerManager.Layers);
         }
 
 
-        /// <summary>
-        /// Sets the color of a specific pixel on the canvas using x and y coordinates.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="color"></param>
+        /* @Method: SetPixel
+         *
+         * @Description: Sets the pixel on the current layer.
+         * @param: x - The x-coordinate of the pixel.
+         * @param: y - The y-coordinate of the pixel.
+         * @param: color - The color of the pixel.
+         */
         public void SetPixel(int x, int y, SKColor color) =>
             // Set the pixel on the current layer
             LayerManager.CurrentLayer?.SetPixel(x, y, color);
 
 
-        /// <summary>
-        /// Returns the color of a specific pixel on the canvas using x and y coordinates.
-        /// </summary>
-        /// 
-        /// <param name="x">The x-coordinate of the pixel.</param>
-        /// <param name="y">The y-coordinate of the pixel.</param>
-        /// <returns type="SKColor">The color of the pixel at the specified coordinates.</returns>
+        /* @Method: GetPixel
+         *
+         * @Description: Returns the color of a specific pixel on the canvas using x and y coordinates.
+         * @param: x - The x-coordinate of the pixel.
+         * @param: y - The y-coordinate of the pixel.
+         * @return: The color of the pixel at the specified coordinates.
+         */
         public SKColor? GetPixel(int x, int y) =>
             // Get the pixel color from the current layer
             LayerManager.CurrentLayer?.GetPixel(x, y);
 
-        /// <summary>
-        /// Handles the touch event on the canvas.
-        /// </summary>
-        /// 
-        /// <param name="sender">The sender of the touch event.</param>
-        /// <param name="e">The touch event arguments.</param>
-        public async Task HandleTouch(object sender, SKTouchEventArgs e)
+
+        /* @Method: HandleTouch
+         *
+         * @Description: Handles the touch event on the canvas.
+         * @param: sender - The sender of the event.
+         * @param: e - The touch event arguments.
+         */
+        public void HandleTouch(object sender,SKTouchEventArgs e, float scale)
         {
-            if (e.ActionType == SKTouchAction.Pressed) { _isDrawing = true; }
-            if (e.ActionType == SKTouchAction.Released) { _isDrawing = false; }
-            if (_isDrawing && e.ActionType == SKTouchAction.Moved)
+            SKCanvasView canvasView = (SKCanvasView)sender; // Get the canvas view
+            int canvasWidth = (int)canvasView.CanvasSize.Width; // Get the width of the canvas
+            int canvasHeight = (int)canvasView.CanvasSize.Height; // Get the height of the canvas
+
+            // if the touch event is released or exited, stop drawing
+            if (e.ActionType == SKTouchAction.Released || e.ActionType == SKTouchAction.Exited)
             {
-                var canvasView = (SKCanvasView)sender;
-
-                SKPoint touchPoint = e.Location;
-
-                // Get the touch coordinates
-                SKPoint convertedPoint = DrawingUtils.ConvertCoordinates(e.Location,
-                    Width, Height, PixelSize, canvasView);
-
-                // Ensure the coordinates are within bounds
-                if (touchPoint.X >= 0 && touchPoint.X < Width &&
-                    touchPoint.Y >= 0 && touchPoint.Y < Height)
-                {
-                    // Draw a line from the last point to the current point
-                    if (LastTouchPoint != null)
-                    {
-                        // Convert the last touch point to logical grid coordinates
-                        int lastX = (int)(LastTouchPoint.Value.X / PixelSize);
-                        int lastY = (int)(LastTouchPoint.Value.Y / PixelSize);
-
-                        // Convert the current touch point to logical grid coordinates
-                        int currentX = (int)(convertedPoint.X / PixelSize);
-                        int currentY = (int)(convertedPoint.Y / PixelSize);
-
-                        // Draw a line between the last and current points
-                        await DrawingUtils.DrawPixelLine(MainPixelCanvas, lastX, lastY, currentX, currentY, SKColors.Black);
-                    }
-                    else
-                    {
-                        // If this is the first touch, set the last touch point
-                        LastTouchPoint = new SKPoint(touchPoint.X, touchPoint.Y);
-                    }
-                }
-                else
-                {
-                    _lastTouchPoint = null;
-                }
-
+                _isDrawing = false;
+                LastTouchPoint = SKPoint.Empty;
                 e.Handled = true;
-
+                return;
             }
-            if (_isDrawing && e.ActionType != SKTouchAction.Moved)
+
+            // Convert touch coordinates to grid coordinates
+            SKPoint gridPoint = new SKPoint(e.Location.X / scale, e.Location.Y / scale);
+
+            // Ensure coordinates are within bounds
+            if (gridPoint.X < 0 || gridPoint.X >= Width || gridPoint.Y < 0 || gridPoint.Y >= Height)
             {
-                var canvasView = (SKCanvasView)sender;
-
-                // Get the touch coordinates
-                SKPoint convertedPoint = DrawingUtils.ConvertCoordinates(e.Location,
-                    Width, Height, PixelSize, canvasView);
-
-                // Ensure the coordinates are within bounds
-                if (convertedPoint.X >= 0 && convertedPoint.X < Width &&
-                    convertedPoint.Y >= 0 && convertedPoint.Y < Height)
-                {
-                    // Set the pixel color at the touch point
-                    SetPixel((int)convertedPoint.X, (int)convertedPoint.Y, SKColors.Black);
-                }
-
-
+                e.Handled = true;
+                return;
             }
-            // touch is released or moves outside the canvas
-            else if (e.ActionType == SKTouchAction.Released || e.ActionType == SKTouchAction.Exited)
-            {
-                // Clear the last touch point when the touch is released or moves outside the canvas
-                _lastTouchPoint = null;
 
+            // if the touch event is pressed, start drawing
+            if (e.ActionType == SKTouchAction.Pressed)
+            {
+                _isDrawing = true;
+                LastTouchPoint = e.Location;
+                SetPixel((int)gridPoint.X, (int)gridPoint.Y, SKColors.Black); // Set the pixel to black
+                e.Handled = true;                                             // TODO: update to use chosen color
+            }
+            else if (_isDrawing && e.ActionType == SKTouchAction.Moved)
+            {
+                // Convert last touch point to grid coordinates
+                SKPoint lastGridPoint = new SKPoint(LastTouchPoint.X / scale, LastTouchPoint.Y / scale);
+
+                // Draw line between points
+                DrawingUtils.DrawPixelLineOnLayer(LayerManager.CurrentLayer, (int)lastGridPoint.X, (int)gridPoint.X, (int)lastGridPoint.Y, (int)gridPoint.Y, SKColors.Black);
+                LastTouchPoint = e.Location;
                 e.Handled = true;
             }
-
-
         }
     }
 }

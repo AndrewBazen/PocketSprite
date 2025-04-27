@@ -1,20 +1,22 @@
-﻿/* Class: LayerManager
-* The LayerManager class manages multiple layers of the canvas.
-* It allows adding, removing, and switching between layers.
-* It also handles drawing the layers onto the canvas.
-* 
-* @author: Andrew Bazen
-* @date: 2025-4-24
-* @version: 1.0
-*/
+﻿/* @Class: LayerManager
+ *
+ * @Description: This class manages multiple layers of the canvas.
+ * @Author: Andrew Bazen
+ * @Date: 2025-4-24
+ * @Version: 1.0
+ * @License: MIT
+ */
 using SkiaSharp;
-using System.Collections.Generic;
 using System.Runtime.Versioning;
-using System;
 
 namespace PocketSpriteLib.Drawing;
 
-
+/* @Class: LayerManager
+ *
+ * @Description: This class manages multiple layers of the canvas.
+ * @Author: Andrew Bazen
+ * @Date: 2025-4-24
+ */
 [SupportedOSPlatform("windows")]
 [SupportedOSPlatform("android")]
 [SupportedOSPlatform("ios")]
@@ -26,14 +28,20 @@ public class LayerManager
     private SKColor DefaultBackgroundColor { get; set; } = SKColors.White;
 
     // properties for the layer manager
-    public CanvasLayer? CurrentLayer { get; set; }
+    public CanvasLayer CurrentLayer { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
     public int PixelSize { get; set; }
     public List<CanvasLayer> Layers => _layers;
 
 
-
+    /* @Constructor: LayerManager
+     *
+     * @Description: Constructor for the LayerManager class.
+     * @param: width - The width of the canvas.
+     * @param: height - The height of the canvas.
+     * @param: pixelSize - The size of the pixels.
+     */
     public LayerManager(int width, int height, int pixelSize)
     {
         Width = width;
@@ -41,12 +49,12 @@ public class LayerManager
         PixelSize = pixelSize;
 
         // Add background layer
-        var backgroundLayer = new CanvasLayer(Width, Height, DefaultBackgroundColor);
+        var backgroundLayer = new CanvasLayer(width, height, DefaultBackgroundColor);
         backgroundLayer.InitializeNewLayer();
         Layers.Add(backgroundLayer);
 
         // Add default drawing layer
-        var drawingLayer = new CanvasLayer(Width, Height, DefaultBackgroundColor);
+        var drawingLayer = new CanvasLayer(width, height, DefaultBackgroundColor);
         drawingLayer.InitializeNewLayer();
         Layers.Add(drawingLayer);
 
@@ -54,6 +62,11 @@ public class LayerManager
     }
 
 
+    /* @Method: AddLayer
+     *
+     * @Description: Adds a new layer to the canvas.
+     * @param: backgroundColor - The color of the layer.
+     */
     public void AddLayer(SKColor backgroundColor = default)
     {
 
@@ -71,6 +84,11 @@ public class LayerManager
         }
     }
 
+    /* @Method: RemoveLayer
+     *
+     * @Description: Removes a layer from the canvas.
+     * @param: index - The index of the layer to remove.
+     */
     public void RemoveLayer(int index)
     {
         if (index > 0 && index < Layers.Count) // Prevent removing the background layer
@@ -90,6 +108,11 @@ public class LayerManager
         }
     }
 
+    /* @Method: SwitchToLayer
+     *
+     * @Description: Switches to a layer.
+     * @param: index - The index of the layer to switch to.
+     */
     public void SwitchToLayer(int index)
     {
         if (index >= 0 && index < Layers.Count)
