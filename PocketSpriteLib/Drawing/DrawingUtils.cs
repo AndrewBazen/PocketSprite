@@ -6,6 +6,7 @@
  * @version: 1.0
  * @license: MIT License
  */
+using PocketSpriteLib.Models;
 using SkiaSharp;
 using System.Runtime.Versioning;
 
@@ -24,6 +25,12 @@ namespace PocketSpriteLib.Drawing;
 [SupportedOSPlatform("maccatalyst")]
 public class DrawingUtils
 {
+
+    //public static void DrawPixel(int x, int y, SKColor color)
+    //{
+    //    // Draws a pixel on the canvas as a rect that is scaled 1x1
+    //    var scale = CalculateScale()
+    //}
 
     /* @Method: DrawPixelLineOnLayer
      *
@@ -52,12 +59,12 @@ public class DrawingUtils
             dy = temp;
         }
 
-        int d = (2 * dy) - dx;
+        int d = 2 * dy - dx;
         int incE = 2 * dy;
         int incNE = 2 * (dy - dx);
         // Draw the line using the midpoint line algorithm
-        int xStep = (x0 < x1) ? 1 : -1;
-        int yStep = (y0 < y1) ? 1 : -1;
+        int xStep = x0 < x1 ? 1 : -1;
+        int yStep = y0 < y1 ? 1 : -1;
 
         for (int i = 0; i <= dx; i++)
         {
@@ -97,19 +104,19 @@ public class DrawingUtils
     {
         canvas.Clear(SKColors.White);   // Clear the canvas first
         canvas.Save();
-        var scaleFactor = CalculateScale(width, height, canvasWidth, canvasHeight);
-        var scale = (int)Math.Round(scaleFactor);
-        canvas.Scale(scaleFactor);
+        var scaleFactor = CalculateScale(width, height, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+        //canvas.Scale(scaleFactor);
         foreach (var layer in layers)
         {
             if (layer.IsVisible)
             {
-                canvas.DrawBitmap(layer.Bitmap, 0, 0);
+                canvas.DrawBitmap(layer.Bitmap, 0, 0);  // Draw each layer
             }
         }
 
+        var scale = (int)Math.Round(scaleFactor);
         // Draw the grid overlay
-        DrawGridOverlay(canvas, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height, scale);
+        DrawGridOverlay(canvas, canvasWidth, canvasHeight, scale);
 
         using var debugPaint = new SKPaint  // Draw a debug border
         { 
@@ -117,7 +124,7 @@ public class DrawingUtils
             Style = SKPaintStyle.Stroke, 
             StrokeWidth = 2 
         };
-        var canvasRect = new SKRect(0, 0, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+        var canvasRect = new SKRect(0, 0, canvasWidth, canvasHeight);
         canvas.DrawRect(canvasRect, debugPaint);
 
         canvas.Restore();

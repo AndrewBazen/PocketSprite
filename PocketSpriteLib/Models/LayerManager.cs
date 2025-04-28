@@ -9,7 +9,7 @@
 using SkiaSharp;
 using System.Runtime.Versioning;
 
-namespace PocketSpriteLib.Drawing;
+namespace PocketSpriteLib.Models;
 
 /* @Class: LayerManager
  *
@@ -31,7 +31,6 @@ public class LayerManager
     public CanvasLayer CurrentLayer { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-    public int PixelSize { get; set; }
     public List<CanvasLayer> Layers => _layers;
 
 
@@ -42,11 +41,10 @@ public class LayerManager
      * @param: height - The height of the canvas.
      * @param: pixelSize - The size of the pixels.
      */
-    public LayerManager(int width, int height, int pixelSize)
+    public LayerManager(int width, int height)
     {
         Width = width;
         Height = height;
-        PixelSize = pixelSize;
 
         // Add background layer
         var backgroundLayer = new CanvasLayer(width, height, DefaultBackgroundColor);

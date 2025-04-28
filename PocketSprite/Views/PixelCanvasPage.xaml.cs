@@ -6,9 +6,6 @@
  * @version: 1.0
  * @license: MIT License
  */
-using SkiaSharp.Views.Maui;
-using SkiaSharp.Views.Maui.Controls;
-using PocketSprite.ViewModels;
 using System.Runtime.Versioning;
 
 namespace PocketSprite.Views;
@@ -35,28 +32,4 @@ public partial class PixelCanvasPage : ContentPage
         InitializeComponent();
     }
 
-    /* @Method: OnCanvasViewPaintSurface
-     *
-     * @Description: Handles the paint surface event for the canvas.
-     */
-    public void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs e)
-    {
-        var canvas = (SKCanvasView)sender;
-        if (BindingContext is PixelCanvasViewModel viewModel)
-        {
-            viewModel.PaintSurface(e);
-        }
-    }
-
-    /* @Method: OnCanvasViewTouch
-     *
-     * @Description: Handles the touch event for the canvas.
-     */
-    public void OnCanvasViewTouch(object sender, SKTouchEventArgs e)
-    {
-        if (BindingContext is PixelCanvasViewModel viewModel)
-        {
-            viewModel.OnTouch(sender, e);
-        }
-    }
 }
