@@ -1,29 +1,49 @@
-using System;
+/* DrawingUtils.cs
+ *
+ * @Description: This file contains the logic for the DrawingUtils class, which provides utility methods for drawing on a canvas.
+ * @Author: Andrew Bazen
+ * @Date: 2025-4-24
+ * @version: 1.0
+ * @license: MIT License
+ */
+using PocketSpriteLib.Models;
 using SkiaSharp;
-using SkiaSharp.Views.Maui.Controls;
-using System.Threading.Tasks;
 using System.Runtime.Versioning;
-using System.Collections.Generic;
+
 
 namespace PocketSpriteLib.Drawing;
 
+/* @Class: DrawingUtils
+ *
+ * @Description: This class provides utility methods for drawing on a canvas.
+ * @Author: Andrew Bazen
+ * @Date: 2025-4-24
+ */
 [SupportedOSPlatform("windows")]
 [SupportedOSPlatform("android")]
 [SupportedOSPlatform("ios")]
 [SupportedOSPlatform("maccatalyst")]
 public class DrawingUtils
 {
-    public static async Task DrawPixel(SKCanvas canvas, int x, int y, SKColor color)
-    {
-        using var paint = new SKPaint
-        {
-            Color = color,
-            Style = SKPaintStyle.Fill
-        };
-        await Task.Run(() => canvas.DrawPoint(x, y, paint));
-    }
-    public static async Task DrawPixelLine(SKCanvas canvas, int x0, int x1, int y0, int y1, SKColor color)
-    {
+
+    //public static void DrawPixel(int x, int y, SKColor color)
+    //{
+    //    // Draws a pixel on the canvas as a rect that is scaled 1x1
+    //    var scale = CalculateScale()
+    //}
+
+    /* @Method: DrawPixelLineOnLayer
+     *
+     * @Description: Draws a line on a canvas layer.
+     * @param: layer - The layer to draw on.
+     * @param: x0 - The starting x coordinate.
+     * @param: x1 - The ending x coordinate.
+     * @param: y0 - The starting y coordinate.
+     * @param: y1 - The ending y coordinate.
+     * @param: color - The color of the line.
+     */
+    public static void DrawPixelLineOnLayer(CanvasLayer layer, int x0, int x1, int y0, int y1, SKColor color)
+    { 
         // use midpoint line algorithm
         int dx = Math.Abs(x1 - x0);
         int dy = Math.Abs(y1 - y0);
@@ -39,146 +59,118 @@ public class DrawingUtils
             dy = temp;
         }
 
-        int d = (2 * dy) - dx;
+        int d = 2 * dy - dx;
         int incE = 2 * dy;
         int incNE = 2 * (dy - dx);
         // Draw the line using the midpoint line algorithm
-        int xStep = (x0 < x1) ? 1 : -1;
-        int yStep = (y0 < y1) ? 1 : -1;
+        int xStep = x0 < x1 ? 1 : -1;
+        int yStep = y0 < y1 ? 1 : -1;
 
-        await Task.Run(async () =>
+        for (int i = 0; i <= dx; i++)
         {
-            for (int i = 0; i <= dx; i++)
+            if (steep)
             {
-                if (steep)
-                {
-                    await DrawPixel(canvas, y, x, color);
-                }
-                else
-                {
-                    await DrawPixel(canvas, x, y, color);
-                }
-
-                if (d < 0)
-                {
-                    d += incE;
-                }
-                else
-                {
-                    d += incNE;
-                    y += yStep;
-                }
-                x += xStep;
+                layer.Bitmap.SetPixel(y, x, color);
+            }
+            else
+            {
+                layer.Bitmap.SetPixel(x, y, color);
             }
 
-        });
-    }
-
-    public static async Task Draw(SKCanvas canvas, int width, int height, int pixelSize, List<CanvasLayer> layers)
-    {
-        // get the canvas size
-        float canvasWidth = canvas.DeviceClipBounds.Width;
-        float canvasHeight = canvas.DeviceClipBounds.Height;
-
-        // Calculate rendered grid size
-        float gridWidth = width * pixelSize;
-        float gridHeight = height * pixelSize;
-
-        // Calculate scale factor
-        float scaleX = canvasWidth / gridWidth;
-        float scaleY = canvasHeight / gridHeight;
-
-        // Use the smaller scale factor to fit the grid within the canvas
-        float scale = Math.Min(scaleX, scaleY);
-
-        canvas.Scale(scale);
-
-        await Task.Run(() =>
-        {
-            // Draw the grid overlay
-            DrawGridOverlay(canvas, width, height, pixelSize);
-            foreach (CanvasLayer layer in layers)
+            if (d < 0)
             {
-                if (layer.IsVisible)
-                {
-                    float renderedWidth = layer.Bitmap.Width * pixelSize;
-                    float renderedHeight = layer.Bitmap.Height * pixelSize;
-                    Console.WriteLine($"Rendered Grid Size: {renderedWidth}x{renderedHeight}");
-                    using var paint = new SKPaint
-                    {
-                        Color = SKColors.White.WithAlpha((byte)(layer.Opacity * 255))
-                    };
-
-                    // Scale the bitmap
-                    var destRect = new SKRect(0, 0, layer.Bitmap.Width * pixelSize, layer.Bitmap.Height * pixelSize);
-                    canvas.DrawBitmap(layer.Bitmap, destRect, paint);
-
-                    // Debug rectangle
-                    using var debugPaint = new SKPaint { Color = SKColors.Red, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
-                    canvas.DrawRect(destRect, debugPaint); // Draw a red border around the grid
-                }
+                d += incE;
             }
-        });
-
+            else
+            {
+                d += incNE;
+                y += yStep;
+            }
+            x += xStep;
+        }
     }
 
-    /// <summary>
-    /// Draws a grid overlay on the canvas.
-    /// </summary>
-    /// 
-    /// <param name="canvas">The SKCanvas to draw on.</param>
-    /// <param name="width">The width of the canvas.</param>
-    /// <param name="height">The height of the canvas.</param>
-    /// <param name="pixelSize">The size of each pixel in the grid.</param>
-    public static void DrawGridOverlay(SKCanvas canvas, int width, int height, int pixelSize)
+    /* @Method: Draw
+     *
+     * @Description: Draws the layers on the canvas.
+     * @param: canvas - The SKCanvas to draw on.
+     * @param: width - The width of the canvas.
+     * @param: height - The height of the canvas.
+     * @param: canvasWidth - The width of the canvas.
+     * @param: canvasHeight - The height of the canvas.
+     * @param: layers - The layers to draw.
+     */
+    public static void Draw(SKCanvas canvas, int width, int height, int canvasWidth, int canvasHeight, List<CanvasLayer> layers)
     {
-        float gridWidth = width * pixelSize;
-        float gridHeight = height * pixelSize;
+        canvas.Clear(SKColors.White);   // Clear the canvas first
+        canvas.Save();
+        var scaleFactor = CalculateScale(width, height, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+        //canvas.Scale(scaleFactor);
+        foreach (var layer in layers)
+        {
+            if (layer.IsVisible)
+            {
+                canvas.DrawBitmap(layer.Bitmap, 0, 0);  // Draw each layer
+            }
+        }
 
-        // // Calculate the scale factor applied during rendering
-        // float scaleX = width / gridWidth;
-        // float scaleY = height / gridHeight;
-        // float scale = Math.Min(scaleX, scaleY);
+        var scale = (int)Math.Round(scaleFactor);
+        // Draw the grid overlay
+        DrawGridOverlay(canvas, canvasWidth, canvasHeight, scale);
 
-        // // Draw the grid overlay using the scaled pixel size
-        // int scaledPixelSize = (int)(pixelSize * scale);
+        using var debugPaint = new SKPaint  // Draw a debug border
+        { 
+            Color = SKColors.Red, 
+            Style = SKPaintStyle.Stroke, 
+            StrokeWidth = 2 
+        };
+        var canvasRect = new SKRect(0, 0, canvasWidth, canvasHeight);
+        canvas.DrawRect(canvasRect, debugPaint);
 
+        canvas.Restore();
+    }
+
+    /* @Method: DrawGridOverlay
+     *
+     * @Description: Draws a grid overlay on the canvas.
+     * @param: canvas - The SKCanvas to draw on.
+     * @param: width - The width of the canvas.
+     * @param: height - The height of the canvas.
+     * @param: scale - The scale of the canvas.
+     */
+    public static void DrawGridOverlay(SKCanvas canvas, int width, int height, int scale)
+    {
         using var gridPaint = new SKPaint
         {
             Color = SKColors.Gray.WithAlpha(128), // Semi-transparent gray
-            StrokeWidth = 0.5f,                     // Thin lines
+            StrokeWidth = 1.0f,                   // Thin lines
             Style = SKPaintStyle.Stroke
         };
 
-        // Draw vertical grid lines
-        for (int x = 0; x <= gridWidth; x += pixelSize)
+        for (int x = 0; x <= width; x += scale)  // Draw vertical grid lines
         {
-            canvas.DrawLine(x, 0, x, gridHeight, gridPaint);
+            canvas.DrawLine(x, 0, x, height , gridPaint);
         }
 
-        // Draw horizontal grid lines
-        for (int y = 0; y <= gridHeight; y += pixelSize)
+        for (int y = 0; y <= height; y += scale)  // Draw horizontal grid lines
         {
-            canvas.DrawLine(0, y, gridWidth, y, gridPaint);
+            canvas.DrawLine(0, y, width, y, gridPaint);
         }
     }
 
-    public static SKPoint ConvertCoordinates(SKPoint touchPoint, int width,
-        int height, int pixelSize, SKCanvasView canvasView)
+    /* @Method: CalculateScale
+     *
+     * @Description: Calculates the scale factor for the grid.
+     * @param: logicalWidth - The width of the logical grid.
+     * @param: logicalHeight - The height of the logical grid.
+     * @param: canvasWidth - The width of the canvas.
+     * @param: canvasHeight - The height of the canvas.
+     * @return: The scale factor.
+     */
+    public static float CalculateScale(float logicalWidth, float logicalHeight, float canvasWidth, float canvasHeight)
     {
-        // Get the canvas scale (use the same logic as in Draw)
-        float canvasWidth = canvasView.CanvasSize.Width;
-        float canvasHeight = canvasView.CanvasSize.Height;
-
-        float gridWidth = width * pixelSize;
-        float gridHeight = height * pixelSize;
-        // Calculate the scale factor applied during rendering
-        float scaleX = canvasWidth / gridWidth;
-        float scaleY = canvasHeight / gridHeight;
-        float scale = Math.Min(scaleX, scaleY);
-        // Adjust touch coordinates to match the scaled grid
-        float adjustedX = touchPoint.X / scale;
-        float adjustedY = touchPoint.Y / scale;
-        return new SKPoint(adjustedX, adjustedY);
+        float scaleX = canvasWidth / logicalWidth * 1.0f;
+        float scaleY = canvasHeight / logicalHeight * 1.0f;
+        return Math.Min(scaleX, scaleY);
     }
 }

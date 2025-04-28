@@ -78,4 +78,8 @@
 	  <ProjectReference Include="../PocketSpriteLib/PocketSpriteLib.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	</ItemGroup>
+
 </Project>
