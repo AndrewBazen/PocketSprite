@@ -8,6 +8,8 @@
  */
 using SkiaSharp;
 using System.Runtime.Versioning;
+using System.Collections.Generic;
+using PocketSpriteLib.Drawing;
 
 namespace PocketSpriteLib.Models;
 
