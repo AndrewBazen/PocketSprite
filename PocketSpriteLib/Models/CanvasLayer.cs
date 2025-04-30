@@ -10,7 +10,7 @@
 using System.Runtime.Versioning;
 using SkiaSharp;
 
-namespace PocketSpriteLib.Models;
+namespace PocketSpriteLib.Drawing;
 
 /* @Class/@Constructor: CanvasLayer
  *

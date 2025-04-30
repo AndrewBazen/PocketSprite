@@ -26,11 +26,27 @@ namespace PocketSpriteLib.Drawing;
 public class DrawingUtils
 {
 
-    //public static void DrawPixel(int x, int y, SKColor color)
-    //{
-    //    // Draws a pixel on the canvas as a rect that is scaled 1x1
-    //    var scale = CalculateScale()
-    //}
+    public static void DrawPixel(CanvasLayer layer, int x, int y, int width,
+        int height, int scale, SKColor color)
+    {
+        //colors all pixels in the same scaled region
+        int x1 = x - (scale / 2);
+        int x2 = x + (scale / 2);
+        int y1 = y - (scale / 2);
+        int y2 = y + (scale / 2);
+
+        if (x1 < 0) x1 = 0;
+        if (x2 >= width) x2 = width - 1;
+        if (y1 < 0) y1 = 0;
+        if (y2 >= height) y2 = height - 1;
+        for (int i = x1; i <= x2; i++)
+        {
+            for (int j = y1; j <= y2; j++)
+            {
+                layer.Bitmap.SetPixel(i, j, color);
+            }
+        }
+    }
 
     /* @Method: DrawPixelLineOnLayer
      *
@@ -42,7 +58,8 @@ public class DrawingUtils
      * @param: y1 - The ending y coordinate.
      * @param: color - The color of the line.
      */
-    public static void DrawPixelLineOnLayer(CanvasLayer layer, int x0, int x1, int y0, int y1, SKColor color)
+    public static void DrawPixelLineOnLayer(CanvasLayer layer, int x0, int x1,
+        int y0, int y1, int width, int height, int scale, SKColor color)
     { 
         // use midpoint line algorithm
         int dx = Math.Abs(x1 - x0);
@@ -50,15 +67,7 @@ public class DrawingUtils
         int x = x0;
         int y = y0;
 
-        bool steep = dy > dx;
-        if (steep)
-        {
-            // swap dx and dy
-            int temp = dx;
-            dx = dy;
-            dy = temp;
-        }
-
+      
         int d = 2 * dy - dx;
         int incE = 2 * dy;
         int incNE = 2 * (dy - dx);
@@ -68,23 +77,16 @@ public class DrawingUtils
 
         for (int i = 0; i <= dx; i++)
         {
-            if (steep)
-            {
-                layer.Bitmap.SetPixel(y, x, color);
-            }
-            else
-            {
-                layer.Bitmap.SetPixel(x, y, color);
-            }
-
             if (d < 0)
             {
                 d += incE;
+                DrawPixel(layer, x, y, width, height, scale, color);
             }
             else
             {
                 d += incNE;
                 y += yStep;
+                DrawPixel(layer, x, y, width, height, scale, color);
             }
             x += xStep;
         }
@@ -100,12 +102,14 @@ public class DrawingUtils
      * @param: canvasHeight - The height of the canvas.
      * @param: layers - The layers to draw.
      */
-    public static void Draw(SKCanvas canvas, int width, int height, int canvasWidth, int canvasHeight, List<CanvasLayer> layers)
+    public static void Draw(SKCanvas canvas, int width, int height, int canvasWidth,
+        int canvasHeight, int pixelSize, List<CanvasLayer> layers)
     {
-        canvas.Clear(SKColors.White);   // Clear the canvas first
         canvas.Save();
-        var scaleFactor = CalculateScale(width, height, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
-        //canvas.Scale(scaleFactor);
+        var scaleFactor = CalculateScale(width, height, canvasWidth,
+            canvasHeight, pixelSize);
+        canvas.Scale(scaleFactor);
+
         foreach (var layer in layers)
         {
             if (layer.IsVisible)
@@ -113,22 +117,16 @@ public class DrawingUtils
                 canvas.DrawBitmap(layer.Bitmap, 0, 0);  // Draw each layer
             }
         }
-
-        var scale = (int)Math.Round(scaleFactor);
-        // Draw the grid overlay
-        DrawGridOverlay(canvas, canvasWidth, canvasHeight, scale);
-
+        
         using var debugPaint = new SKPaint  // Draw a debug border
         { 
             Color = SKColors.Red, 
             Style = SKPaintStyle.Stroke, 
             StrokeWidth = 2 
         };
-        var canvasRect = new SKRect(0, 0, canvasWidth, canvasHeight);
+        var canvasRect = new SKRect(0, 0, width, height);
         canvas.DrawRect(canvasRect, debugPaint);
-
-        canvas.Restore();
-    }
+      }
 
     /* @Method: DrawGridOverlay
      *
@@ -138,23 +136,26 @@ public class DrawingUtils
      * @param: height - The height of the canvas.
      * @param: scale - The scale of the canvas.
      */
-    public static void DrawGridOverlay(SKCanvas canvas, int width, int height, int scale)
+    public static void DrawGridOverlay(SKCanvas canvas,int width, int height, int pixelSize)
     {
+        float gridWidth = width * pixelSize;
+        float gridHeight = height * pixelSize;
+
         using var gridPaint = new SKPaint
         {
             Color = SKColors.Gray.WithAlpha(128), // Semi-transparent gray
-            StrokeWidth = 1.0f,                   // Thin lines
+            StrokeWidth = 0.5f,                   // Thin lines
             Style = SKPaintStyle.Stroke
         };
 
-        for (int x = 0; x <= width; x += scale)  // Draw vertical grid lines
+        for (int x = 0; x <= gridWidth; x += pixelSize)  // Draw vertical grid lines
         {
-            canvas.DrawLine(x, 0, x, height , gridPaint);
+            canvas.DrawLine(x, 0, x, gridHeight , gridPaint);
         }
 
-        for (int y = 0; y <= height; y += scale)  // Draw horizontal grid lines
+        for (int y = 0; y <= gridHeight; y += pixelSize)  // Draw horizontal grid lines
         {
-            canvas.DrawLine(0, y, width, y, gridPaint);
+            canvas.DrawLine(0, y, gridWidth, y, gridPaint);
         }
     }
 
@@ -167,10 +168,16 @@ public class DrawingUtils
      * @param: canvasHeight - The height of the canvas.
      * @return: The scale factor.
      */
-    public static float CalculateScale(float logicalWidth, float logicalHeight, float canvasWidth, float canvasHeight)
+    public static float CalculateScale(float logicalWidth, float logicalHeight, float canvasWidth,
+        float canvasHeight, int pixelSize)
     {
-        float scaleX = canvasWidth / logicalWidth * 1.0f;
-        float scaleY = canvasHeight / logicalHeight * 1.0f;
+        float gridWidth = logicalWidth * pixelSize;
+        float gridHeight = logicalHeight * pixelSize;
+
+        float scaleX = canvasWidth / gridWidth;
+        float scaleY = canvasHeight / gridHeight;
+
+
         return Math.Min(scaleX, scaleY);
     }
 }

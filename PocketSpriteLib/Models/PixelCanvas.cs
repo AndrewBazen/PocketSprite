@@ -63,10 +63,12 @@ namespace PocketSpriteLib.Models
             return LayerManager.CurrentLayer?.GetPixel(x, y) ?? SKColors.Transparent;
         }
 
-        public void DrawPixelLine(int x0, int x1, int y0, int y1, SKColor color)
+        public void DrawPixelLine(int x0, int x1, int y0, int y1, int width, int height,
+            int scale, SKColor color)
         {
             // Draw a line between two points
-            DrawingUtils.DrawPixelLineOnLayer(LayerManager.CurrentLayer, x0, x1, y0, y1, color);
+            DrawingUtils.DrawPixelLineOnLayer(LayerManager.CurrentLayer, x0, x1, y0, y1,
+                width, height, scale, color);
         }
     }
 }
