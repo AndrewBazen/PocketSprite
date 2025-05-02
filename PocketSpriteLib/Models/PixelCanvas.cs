@@ -41,7 +41,7 @@ namespace PocketSpriteLib.Models
          */
         public PixelCanvas()
         {
-            LayerManager = new LayerManager(Width, Height);
+            LayerManager = new LayerManager();
         }
 
 
@@ -52,23 +52,19 @@ namespace PocketSpriteLib.Models
          * @param: y - The y-coordinate of the pixel.
          * @param: color - The color of the pixel.
          */
-        public void SetPixel(int x, int y, SKColor color) =>
+        public void SetPixel(int x, int y, SKColor color) {
             // Set the pixel on the current layer
-            LayerManager.CurrentLayer?.SetPixel(x, y, color);
+            // Check if the coordinates are within the bounds of the bitmap
+            if (x < 0 || x >= LayerManager.CurrentLayer?.Bitmap.Width || y < 0 || y >= LayerManager.CurrentLayer?.Bitmap.Height)
+                return;
+            LayerManager.CurrentLayer?.Bitmap.SetPixel(x, y, color);
+        }
 
 
         public SKColor GetPixel(int x, int y)
         {
             // Get the pixel color from the current layer
-            return LayerManager.CurrentLayer?.GetPixel(x, y) ?? SKColors.Transparent;
-        }
-
-        public void DrawPixelLine(int x0, int x1, int y0, int y1, int width, int height,
-            int scale, SKColor color)
-        {
-            // Draw a line between two points
-            DrawingUtils.DrawPixelLineOnLayer(LayerManager.CurrentLayer, x0, x1, y0, y1,
-                width, height, scale, color);
+            return LayerManager.CurrentLayer?.Bitmap.GetPixel(x, y) ?? SKColors.Transparent;
         }
     }
 }
