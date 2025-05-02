@@ -58,39 +58,47 @@ public class DrawingUtils
      * @param: y1 - The ending y coordinate.
      * @param: color - The color of the line.
      */
-    public static void DrawPixelLineOnLayer(CanvasLayer layer, int x0, int x1,
-        int y0, int y1, int width, int height, int scale, SKColor color)
-    { 
-        // use midpoint line algorithm
+    public static void DrawPixelLineOnLayer(
+       PixelCanvas canvas,
+       int x0, int x1, int y0, int y1,
+       SKColor color) {
         int dx = Math.Abs(x1 - x0);
         int dy = Math.Abs(y1 - y0);
+
         int x = x0;
         int y = y0;
 
-      
-        int d = 2 * dy - dx;
-        int incE = 2 * dy;
-        int incNE = 2 * (dy - dx);
-        // Draw the line using the midpoint line algorithm
-        int xStep = x0 < x1 ? 1 : -1;
-        int yStep = y0 < y1 ? 1 : -1;
+        int xStep = (x0 < x1) ? 1 : -1;
+        int yStep = (y0 < y1) ? 1 : -1;
 
-        for (int i = 0; i <= dx; i++)
-        {
-            if (d < 0)
-            {
-                d += incE;
-                DrawPixel(layer, x, y, width, height, scale, color);
-            }
+        bool steep = dy > dx;
+
+        if (steep) {
+            // Swap x and y for steep lines
+            (x, y) = (y, x);
+            (dx, dy) = (dy, dx);
+            (xStep, yStep) = (yStep, xStep);
+            (x0, y0) = (y0, x0);
+        }
+
+        int d = 2 * dy - dx;
+
+        for (int i = 0; i <= dx; i++) {
+            if (steep)
+                canvas.SetPixel(y, x, color);  // y and x are swapped back
             else
-            {
-                d += incNE;
+                canvas.SetPixel(x, y, color);
+
+            if (d > 0) {
                 y += yStep;
-                DrawPixel(layer, x, y, width, height, scale, color);
+                d -= 2 * dx;
             }
+
+            d += 2 * dy;
             x += xStep;
         }
     }
+
 
     /* @Method: Draw
      *
@@ -102,19 +110,22 @@ public class DrawingUtils
      * @param: canvasHeight - The height of the canvas.
      * @param: layers - The layers to draw.
      */
-    public static void Draw(SKCanvas canvas, int width, int height, int canvasWidth,
-        int canvasHeight, int pixelSize, List<CanvasLayer> layers)
+    public static void Draw(SKCanvas canvas, int logicalWidth, int logicalHeight, int viewWidth,
+        int viewHeight, int pixelSize, List<CanvasLayer> layers)
     {
         canvas.Save();
-        var scaleFactor = CalculateScale(width, height, canvasWidth,
-            canvasHeight, pixelSize);
-        canvas.Scale(scaleFactor);
+        
+        float scaledWidth = logicalWidth * pixelSize;
+        float scaledHeight = logicalHeight * pixelSize;
+
+        float offsetX = (viewWidth - scaledWidth) / 2f;
+        float offsetY = (viewHeight - scaledHeight) / 2f;
 
         foreach (var layer in layers)
         {
             if (layer.IsVisible)
             {
-                canvas.DrawBitmap(layer.Bitmap, 0, 0);  // Draw each layer
+                DrawLayerPixelPerfect(canvas, layer, pixelSize);
             }
         }
         
@@ -124,8 +135,10 @@ public class DrawingUtils
             Style = SKPaintStyle.Stroke, 
             StrokeWidth = 2 
         };
-        var canvasRect = new SKRect(0, 0, width, height);
+        var canvasRect = new SKRect(0, 0, logicalWidth * pixelSize, logicalHeight * pixelSize);
         canvas.DrawRect(canvasRect, debugPaint);
+
+        canvas.Restore();
       }
 
     /* @Method: DrawGridOverlay
@@ -136,26 +149,24 @@ public class DrawingUtils
      * @param: height - The height of the canvas.
      * @param: scale - The scale of the canvas.
      */
-    public static void DrawGridOverlay(SKCanvas canvas,int width, int height, int pixelSize)
+    public static void DrawGridOverlay(SKCanvas canvas, float offsetX, float offsetY,
+        int logicalWidth, int logicalHeight, float Zoom,  int pixelSize)
     {
-        float gridWidth = width * pixelSize;
-        float gridHeight = height * pixelSize;
-
-        using var gridPaint = new SKPaint
-        {
-            Color = SKColors.Gray.WithAlpha(128), // Semi-transparent gray
-            StrokeWidth = 0.5f,                   // Thin lines
-            Style = SKPaintStyle.Stroke
+        using var gridPaint = new SKPaint {
+            Color = SKColors.Gray.WithAlpha(100),
+            Style = SKPaintStyle.Stroke,
+            StrokeWidth = 1,
+            IsAntialias = false
         };
 
-        for (int x = 0; x <= gridWidth; x += pixelSize)  // Draw vertical grid lines
-        {
-            canvas.DrawLine(x, 0, x, gridHeight , gridPaint);
+        // Draw grid in logical pixel space
+        for (int x = 0; x <= logicalWidth; x++) {
+            float gx = x * pixelSize;
+            canvas.DrawLine(gx, 0, gx, logicalHeight * pixelSize, gridPaint);
         }
-
-        for (int y = 0; y <= gridHeight; y += pixelSize)  // Draw horizontal grid lines
-        {
-            canvas.DrawLine(0, y, gridWidth, y, gridPaint);
+        for (int y = 0; y <= logicalHeight; y++) {
+            float gy = y * pixelSize;
+            canvas.DrawLine(0, gy, logicalWidth * pixelSize, gy, gridPaint);
         }
     }
 
@@ -180,4 +191,39 @@ public class DrawingUtils
 
         return Math.Min(scaleX, scaleY);
     }
+
+    public static void DrawCheckerboard(SKCanvas canvas, int width, int height, int cellSize) {
+        using var lightPaint = new SKPaint { Color = new SKColor(200, 200, 200) };
+        using var darkPaint = new SKPaint { Color = new SKColor(160, 160, 160) };
+
+        cellSize = Math.Clamp(cellSize, 8, 256);
+        for (int y = 0; y < height; y += cellSize) {
+            for (int x = 0; x < width; x += cellSize) {
+               
+                bool isLight = ((x / cellSize) + (y / cellSize)) % 2 == 0;
+                var paint = isLight ? lightPaint : darkPaint;
+                canvas.DrawRect(x, y, cellSize, cellSize, paint);
+            }
+        }
+    }
+
+    public static void DrawLayerPixelPerfect(SKCanvas canvas, CanvasLayer layer, int pixelSize) {
+        if (!layer.IsVisible) return;
+
+        int width = layer.Bitmap.Width;
+        int height = layer.Bitmap.Height;
+
+        var sourceRect = new SKRect(0, 0, width, height);
+        var destRect = new SKRect(0, 0, width * pixelSize, height * pixelSize);
+
+        using var paint = new SKPaint {
+            FilterQuality = SKFilterQuality.None, // this is deprecated but still works on older versions
+            IsAntialias = false,
+            IsDither = false
+        };
+
+        canvas.DrawBitmap(layer.Bitmap, sourceRect, destRect, paint);
+    }
+
+
 }

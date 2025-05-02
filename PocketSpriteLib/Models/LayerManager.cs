@@ -25,14 +25,17 @@ namespace PocketSpriteLib.Models;
 [SupportedOSPlatform("maccatalyst")]
 public class LayerManager
 {
+    // constants for defaults in pixels
+    const int DEFAULT_WIDTH = 256;
+    const int DEFAULT_HEIGHT = 256;
     // fields for the layer manager
     private List<CanvasLayer> _layers { get; set; } = [];
-    private SKColor DefaultBackgroundColor { get; set; } = SKColors.White;
+    private SKColor DefaultBackgroundColor { get; set; } = SKColors.Transparent;
 
     // properties for the layer manager
     public CanvasLayer CurrentLayer { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public int Width { get; set; } = DEFAULT_WIDTH;
+    public int Height { get; set; } = DEFAULT_HEIGHT;
     public List<CanvasLayer> Layers => _layers;
 
 
@@ -43,18 +46,16 @@ public class LayerManager
      * @param: height - The height of the canvas.
      * @param: pixelSize - The size of the pixels.
      */
-    public LayerManager(int width, int height)
+    public LayerManager()
     {
-        Width = width;
-        Height = height;
-
+        
         // Add background layer
-        var backgroundLayer = new CanvasLayer(width, height, DefaultBackgroundColor);
+        var backgroundLayer = new CanvasLayer(Width, Height, DefaultBackgroundColor);
         backgroundLayer.InitializeNewLayer();
         Layers.Add(backgroundLayer);
 
         // Add default drawing layer
-        var drawingLayer = new CanvasLayer(width, height, DefaultBackgroundColor);
+        var drawingLayer = new CanvasLayer(Width, Height, DefaultBackgroundColor);
         drawingLayer.InitializeNewLayer();
         Layers.Add(drawingLayer);
 
