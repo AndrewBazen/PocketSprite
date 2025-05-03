@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  paletteservice:
+    build:
+      context: ./PaletteService
+      dockerfile: Dockerfile
+    container_name: paletteservice
+    ports:
+      - "5050:80"
+    volumes:
+      - palettes_data:/app/Data  # If you want to persist a .db file
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+volumes:
+  palettes_data:
