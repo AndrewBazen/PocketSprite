@@ -1,30 +1,41 @@
+/* Program.cs
+*
+* @description: Main entry point for the PaletteService
+*
+* @author: Andrew Bazen <github.com/AndrewBazen>
+* @version: 1.0
+* @date-created: 2025-05-03
+* @date-modified: 2025-05-03
+*/
 using PaletteService.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddDbContext<PaletteDBContext>(options =>
-    options.UseSqlite("Data Source=palettes.db");
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
+// Configure the DbContext
+DbContextConfig.Configure(builder.Services, builder.Configuration);
+
+// Build the app
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-    app.MapOpenApi();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+// Use HTTPS redirection only in production
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
+// Use authorization
 app.UseAuthorization();
 
+// Map controllers
 app.MapControllers();
 
 app.Run();
