@@ -1,101 +1,144 @@
 # PocketSprite
 
-**A cross-platform pixel art editor designed for game developers, artists, and developers.**
+**A cross-platform pixel art editor built for game developers, hobbyists, and creative coders.**
 
-PocketSprite is an all-in-one solution for creating, editing, importing, and exporting pixel art sprites and animations. With a user-centric design, PocketSprite aims to simplify the workflow for artists and developers by offering robust cross-platform functionality and a seamless user experience.
+PocketSprite is an intuitive and powerful tool for creating pixel art sprites and animations. Designed with a focus on usability, performance, and extensibility, it streamlines the artistic workflow for indie devs, designers, and retro art enthusiasts.
 
 ---
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Roadmap](#roadmap)
 4. [Installation](#installation)
 5. [Usage](#usage)
-6. [Dependencies](#dependencies)
-7. [Contributing](#contributing)
-8. [License](#license)
+6. [Testing](#testing)
+7. [Dependencies](#dependencies)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ---
 
 ## Introduction
 
-PocketSprite is designed to empower game developers, artists, and developers who need a versatile and easy-to-use pixel art editor. Whether you're crafting art for your next game or experimenting with pixel art as a hobby, PocketSprite provides the tools you need to bring your vision to life.
+PocketSprite is a cross-platform pixel art editor targeting simplicity, flexibility, and developer friendliness. Whether you’re creating game assets or exploring the world of pixel art, PocketSprite provides a solid foundation with essential tools and planned extensibility.
 
 ### Why PocketSprite?
 
-- **All-in-One Solution**: Create, edit, import, and export sprites all in one place.
-- **Cross-Platform**: Works seamlessly across major operating systems.
-- **User-Focused**: Built with artists and developers in mind, featuring quality-of-life improvements to streamline workflows.
+* **All-in-One Workflow**: Draw, edit, manage layers, and export — all within a single environment.
+* **Cross-Platform Support**: Runs on Windows, macOS, Linux, Android, and iOS via .NET MAUI.
+* **Built for Developers and Artists**: Practical features, a responsive UI, and code structured for extension.
+
+---
+
+## Features
+
+* Pixel-accurate drawing tools (brush, eraser)
+* Grid snapping, zooming, and panning
+* Multiple layer support
+* Palette editor and color picker
+* Preview animations
+* SkiaSharp-powered rendering for performance
 
 ---
 
 ## Roadmap
 
-The following features are planned for future releases:
-**Near:**
-- Color editing options
-- Tools (brush, eraser, selection, etc..)
-- Save/Load drawings and sprites
-- canvas resizing
-- Copy/Paste
-- Pixel-perfect editing
-- Import/Export in major formats
-- Android and IOS support
-- Improved UI and preferences
+### Near-Term Goals
 
-**Far:**
-- Program themes and customization
-- Advanced export options to major game engines.
-- Palette creation and sharing platform.
-- Enhanced tools for sprite animation and preview.
-- Animation workflows and tools
+* Enhanced palette editor
+* Core editing tools (selection, shapes)
+* Canvas resizing
+* Project save/load system
+* Export as PNG/GIF
+* Mobile app support
+* UI settings and preferences
 
-Stay tuned for updates! Contributions and feature suggestions are welcome.
+### Long-Term Vision
+
+* Sprite animation timelines
+* Export for popular game engines
+* Palette sharing via [PaletteTheory](https://github.com/AndrewBazen/PaletteTheory)
+* Custom UI theming
+* Scriptable tools and plugin support
 
 ---
 
 ## Installation
 
-PocketSprite will be designed to make installation as simple as possible in the future, but for now Follow these steps to get started:
+> ⚠️ PocketSprite is currently in early development and must be built from source.
 
-1. **Download the package** for your platform from the [Releases](https://github.com/AndrewBazen/PocketSprite/releases) page.
-2. Currently the program is only launchable through Microsoft's .NET runtime.  Once you have the package downloaded, ensure that you install the correct dependencies to run it (see below).
-   When you are sure that you have the necessary dependicies installed, navigate to the root directory (the folder that you extracted the package to, run the following commands  
-     ```bash
-     dotnet clean
-     dotnet restore
-     dotnet build
-     dotnet run
-     ```
+```bash
+git clone https://github.com/AndrewBazen/PocketSprite.git
+cd PocketSprite
+dotnet workload install maui
+dotnet clean
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Requires [.NET 9.0 SDK](https://dotnet.microsoft.com).
+
 ---
 
 ## Usage
 
-Additional documentation and tutorials will be made available in future releases.
+Launch the app and begin drawing in the main canvas. Features include:
+
+* **Left-click** to draw
+* **Right-click** to erase
+* **Scroll wheel** to zoom
+* **Touch gestures** supported (WIP)
+
+Sidebar and toolbar features are being added continuously.
+
+---
+
+## Testing
+
+Run tests with:
+
+```bash
+dotnet test
+```
+
+Markdown summaries and color previews are saved to `/TestOutput/` when relevant.
 
 ---
 
 ## Dependencies
 
-Ensure the following dependencies are installed before running PocketSprite:
-- [.NET 9.0](https://dotnet.microsoft.com/)
-- [MAUI](https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui)
-- [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/)
-- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
+Make sure the following are installed:
+
+* [.NET 9.0 SDK](https://dotnet.microsoft.com/)
+* [MAUI](https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui)
+* [SkiaSharp](https://github.com/mono/SkiaSharp)
+* [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/)
+* [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+* [xUnit](https://xunit.net/)
+* [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
 
 ---
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute:
-1. Fork the repository.
-2. Create a feature branch:  
-   ```bash
-   git checkout -b feature-name
+Contributions are welcome!
+
+```bash
+git clone https://github.com/AndrewBazen/PocketSprite.git
+git checkout -b feature/my-feature
+```
+
+Open a pull request with a clear description and screenshots or test results.
 
 ---
 
-## Licence
+## License
 
-This project is licenced under the GNU General Public License (GPL). See the [LICENSE](https://github.com/AndrewBazen/PocketSprite/License)
+PocketSprite is licensed under the **GNU General Public License v3.0** (GPL-3.0).
+
+> This license ensures that the project remains open source. Any derivative work must also remain open. While the source code and binaries are free, **prebuilt versions may be offered for purchase in the future** to help support ongoing development.
+
+See the [`LICENSE`](LICENSE) file for full details.
