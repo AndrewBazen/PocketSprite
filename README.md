@@ -2,7 +2,7 @@
 
 **A cross-platform pixel art editor designed for game developers, artists, and developers.**
 
-PocketSprite is an all-in-one solution for creating, editing, importing, and exporting pixel art sprites. With a user-centric design, PocketSprite aims to simplify the workflow for artists and developers by offering robust cross-platform functionality and a seamless user experience.
+PocketSprite is an all-in-one solution for creating, editing, importing, and exporting pixel art sprites and animations. With a user-centric design, PocketSprite aims to simplify the workflow for artists and developers by offering robust cross-platform functionality and a seamless user experience.
 
 ---
 
@@ -30,24 +30,26 @@ PocketSprite is designed to empower game developers, artists, and developers who
 
 ---
 
-## Features
-
-- **Pixel Art Editing**: Intuitive tools for creating and modifying sprites.
-- **Import & Export**: Supports multiple formats and direct export to major game engines.
-- **Palette Management**: Create and share palettes with the community.
-- **Cross-Platform**: Compatible with Windows, macOS, and Linux.
-- **Future Features**:
-  - Palette sharing platform for community collaboration.
-  - Export options tailored for popular game engines (e.g., Unity, Unreal).
-
----
-
 ## Roadmap
 
 The following features are planned for future releases:
+**Near:**
+- Color editing options
+- Tools (brush, eraser, selection, etc..)
+- Save/Load drawings and sprites
+- canvas resizing
+- Copy/Paste
+- Pixel-perfect editing
+- Import/Export in major formats
+- Android and IOS support
+- Improved UI and preferences
+
+**Far:**
+- Program themes and customization
 - Advanced export options to major game engines.
 - Palette creation and sharing platform.
 - Enhanced tools for sprite animation and preview.
+- Animation workflows and tools
 
 Stay tuned for updates! Contributions and feature suggestions are welcome.
 
@@ -55,25 +57,22 @@ Stay tuned for updates! Contributions and feature suggestions are welcome.
 
 ## Installation
 
-PocketSprite is designed to make installation as simple as possible. Follow these steps to get started:
+PocketSprite will be designed to make installation as simple as possible in the future, but for now Follow these steps to get started:
 
 1. **Download the package** for your platform from the [Releases](https://github.com/AndrewBazen/PocketSprite/releases) page.
-2. Run the installation script for your platform:
-   - **Windows**:  
+2. Currently the program is only launchable through Microsoft's .NET runtime.  Once you have the package downloaded, ensure that you install the correct dependencies to run it (see below).
+   When you are sure that you have the necessary dependicies installed, navigate to the root directory (the folder that you extracted the package to, run the following commands  
      ```bash
-     install.bat
+     dotnet clean
+     dotnet restore
+     dotnet build
+     dotnet run
      ```
-   - **macOS/Linux**:  
-     ```bash
-     ./install.sh
-     ```
-3. Follow the on-screen instructions to complete the setup.
-
 ---
 
 ## Usage
 
-Once installed, launch PocketSprite to start creating and editing pixel art sprites. Additional documentation and tutorials will be made available in future releases.
+Additional documentation and tutorials will be made available in future releases.
 
 ---
 
