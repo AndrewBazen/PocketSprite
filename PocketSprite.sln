@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketSpriteLib", "PocketSp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketSpriteTest", "PocketSpriteTest\PocketSpriteTest.csproj", "{16D91053-44A1-4CE4-93C4-BD8B9198BE37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaletteService", "PaletteService\PaletteService.csproj", "{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,18 +56,6 @@ Global
 		{16D91053-44A1-4CE4-93C4-BD8B9198BE37}.Release|x64.Build.0 = Release|Any CPU
 		{16D91053-44A1-4CE4-93C4-BD8B9198BE37}.Release|x86.ActiveCfg = Release|Any CPU
 		{16D91053-44A1-4CE4-93C4-BD8B9198BE37}.Release|x86.Build.0 = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|x64.Build.0 = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Debug|x86.Build.0 = Debug|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|x64.ActiveCfg = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|x64.Build.0 = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|x86.ActiveCfg = Release|Any CPU
-		{1FF3133A-041A-462A-B7D9-ADBBC5F6FDAC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -22,7 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PocketSpriteLib\PocketSpriteLib.csproj" />
     <ProjectReference Include="..\PocketSprite\PocketSprite.csproj" />
-    <ProjectReference Include="..\PaletteService\PaletteService.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />
