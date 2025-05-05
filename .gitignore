@@ -387,6 +387,7 @@ temp
 # ignore .vs and .vscode folders
 .vs/
 .vscode/
+.env
 # Ignore specific folders for Xamarin projects
 
 # Ignore specific Debug folders
